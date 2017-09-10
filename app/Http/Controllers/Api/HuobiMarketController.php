@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 
-class MarketController extends Controller
+class HuobiMarketController extends Controller
 {
     public function detail() {
         $client = new Client();

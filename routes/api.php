@@ -17,4 +17,5 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/market/detail', 'MarketController@detail');
+Route::get('/huobi/market/detail', 'HuobiMarketController@detail');
+Route::get('/bithumb/market/ticker', 'BithumbMarketController@ticker');
