@@ -11,7 +11,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 
-class BithumbMarketController extends Controller
+class BithumbPublicController extends Controller
 {
     public function ticker() {
         $client = new Client();
