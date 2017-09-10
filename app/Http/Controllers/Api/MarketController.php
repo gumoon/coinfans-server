@@ -11,11 +11,11 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 
-class IndexController extends Controller
+class MarketController extends Controller
 {
-    public function test() {
+    public function detail() {
         $client = new Client();
-        $url = 'https://be.huobi.com/v1/common/currencys';
+        $url = 'https://be.huobi.com/market/detail';
 
         $params = [
             'symbol' => 'ethcny',
