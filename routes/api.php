@@ -19,3 +19,4 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::get('/huobi/market/detail', 'HuobiMarketController@detail');
 Route::get('/bithumb/public/ticker', 'BithumbPublicController@ticker');
+Route::get('/chbtc/market/ticker', 'CHBTCMarketController@ticker');
