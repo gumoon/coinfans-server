@@ -26,5 +26,5 @@ Route::get('/coin/listByMarket', 'CoinController@listByMarket');
 Route::get('/coin/search', 'CoinController@search');
 Route::get('/coin/topByVolume', 'CoinController@topByVolume');
 
-Route::get('/market/listByMarket', 'MarketController@listByMarket');
+Route::get('/market/listByCoin', 'MarketController@listByCoin');
 Route::get('/market/search', 'MarketController@search');
