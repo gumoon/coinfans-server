@@ -9,22 +9,28 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 
 class MarketController extends Controller
 {
-    public function detail() {
-        $client = new Client();
-        $url = 'https://be.huobi.com/market/detail';
+    /**
+     * 支持某个币交易的所有市场列表
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function listByCoin(Request $request) {
 
-        $params = [
-            'symbol' => 'ethcny',
-        ];
-        $res = $client->request('GET', $url, [
-            'query' => $params,
-        ]);
+        return $this->successJson();
+    }
 
-        $ret = json_decode($res->getBody()->getContents());
-        return $this->successJson($ret);
+    /**
+     * 搜索市场
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function search(Request $request) {
+        return $this->successJson();
     }
 }
