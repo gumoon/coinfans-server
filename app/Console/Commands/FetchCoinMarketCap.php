@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Foundation\Inspiring;
+use Illuminate\Support\Facades\DB;
 
 class FetchCoinMarketCap extends Command
 {
@@ -38,7 +38,14 @@ class FetchCoinMarketCap extends Command
      */
     public function handle()
     {
-        //
-        $this->comment(Inspiring::quote());
+        //抓取网页，然后入库
+        $url = "https://coinmarketcap.com/";
+        $html = file_get_contents($url);
+
+        $id = DB::insert('insert into `origin_data` (url, html, add_time) values (?, ?, ?)', [$url, $html, time()]);
+
+        $this->comment($id);
+
+        return $id;
     }
 }

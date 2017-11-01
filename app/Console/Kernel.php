@@ -25,7 +25,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('fetch:coinmarketcap')
-                  ->everyMinute();
+                  ->everyMinute()
+                  ->appendOutputTo('/tmp/coinfans_schedule.log');
     }
 
     /**
