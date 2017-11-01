@@ -42,7 +42,7 @@ class FetchCoinMarketCap extends Command
         $url = "https://coinmarketcap.com/";
         $html = file_get_contents($url);
 
-        $id = DB::insert('insert into `origin_data` (url, html, add_time) values (?, ?, ?)', [$url, $html, time()]);
+        $id = DB::insert('insert into `origin_data` (url, html, add_time) values (?, ?, ?)', [$url, $html, date('Y-m-d H:i:s', time())]);
 
         $this->comment($id);
 
