@@ -23,22 +23,23 @@ $crawler = $crawler->filter('table > tbody')->children();
 
         foreach ($crawler as $domElement) {
             $e = new Crawler($domElement);
-//            echo $e->filter('td')->text();
-//            echo $e->filter('td > span')->text();
-//            echo $e->filter('td > a')->text();
-//            echo $e->filter('.market-cap')->attr('data-usd');
-//            echo $e->filter('.market-cap')->attr('data-btc');
-//            echo $e->filter('.price')->attr('data-usd');
-//            echo $e->filter('.price')->attr('data-btc');
-//            echo $e->filter('.volume')->attr('data-usd');
-//            echo $e->filter('.volume')->attr('data-btc');
-//            echo $e->filter('.circulating-supply').attr('data-supply');
-//            echo $e->filter('.positive_change')->attr('data-usd');
-            $ee = $e->children();
-            foreach($ee as $dd) {
-                $c = new Crawler($dd);
-                echo $c->text();
-            }
+            $rank = $e->filter('td')->text();
+            $symbol = $e->filter('td > span')->text();
+            $name = $e->filter('td > a')->text();
+            $marketCapUsd = $e->filter('.market-cap')->attr('data-usd');
+            $marketCapBtc = $e->filter('.market-cap')->attr('data-btc');
+            $priceUsd = $e->filter('.price')->attr('data-usd');
+            $priceBtc = $e->filter('.price')->attr('data-btc');
+            $volumeUsd = $e->filter('.volume')->attr('data-usd');
+            $volumeBtc = $e->filter('.volume')->attr('data-btc');
+            //流通量
+            $e->filter('.circulating-supply')->attr('data-supply');
+            $changeRateUsd = trim($e->filter('.positive_change')->attr('data-usd'), '%');
+
+            $insertData = [
+                'rank' => $rank,
+            ];
+            DB::table('market_timeline')->insert($insertData);
             break;
         }
 
