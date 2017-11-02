@@ -66,9 +66,9 @@ class PostTimeline extends Command
 
                 $insertData = [
                     'or_id' => $item->id,
-                    'rank' => $rank,
-                    'symbol' => $symbol,
-                    'name' => $name,
+                    'rank' => intval($rank),
+                    'symbol' => trim($symbol),
+                    'name' => trim($name),
                     'price_btc' => $priceBtc,
                     'price_usd' => $priceUsd,
                     'volume_usd' => $volumeUsd,
