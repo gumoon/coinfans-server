@@ -42,7 +42,7 @@ class PostTimeline extends Command
         //从 origin_data 表中取出1000条记录，按正序排列，确保先处理id小的。
         //循环分析这1000条记录，写入 market_timeline 表，然后，更改 origin_data 表字段为已分析。
 
-        $originData = DB::select('select * from `origin_data` where id > 0 and status = 0 order by id limit 1000');
+        $originData = DB::select('select * from `origin_data` where id > 0 and status = 0 order by id limit 10');
         foreach($originData AS $item) {
             $crawler = new Crawler($item['html']);
             $crawler = $crawler->filter('table > tbody')->children();
