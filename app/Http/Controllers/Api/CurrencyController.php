@@ -10,6 +10,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CurrencyController extends Controller
 {
@@ -21,25 +22,31 @@ class CurrencyController extends Controller
      */
     public function listByMarket(Request $request) {
 
-        $marketId = $request->get('market_id');
-        $ret = [
-            [
-                'rank' => 1,
-                'currency_logo' => 'https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png',
-                'currency_symbol' => 'BTC',
-                'currency_name' => 'Bitcoin',
-                'market_cap_usd' => '100776285567',
-                'market_cap_btc' => '16654512.0',
-                'price_usd' => '6050.99',
-                'price_btc' => '1.0',
-                'volume_usd' => '2488650000.0',
-                'volume_btc' => '411263.0',
-                'circulating_supply' => '16654512.0',
-                'change' => 1, //1=上升，0=下降
-                'change_rate_usd' => 3.10,
-                'change_rate_btc' => 0.00,
-            ],
-        ];
+        $marketId = $request->get('market_id', 0);
+        $ret = [];
+        if($marketId == 0) {
+            $totalMarketTimeline = DB::select('select * from `market_timeline` where or_id = 
+                 (select max(or_id) from `market_timeline`) order by rank limit 20');
+            foreach($totalMarketTimeline AS $item) {
+                $ret[] = [
+                    'rank' => $item->rank,
+                    'currency_logo' => 'https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png',
+                    'currency_symbol' => $item->symbol,
+                    'currency_name' => $item->name,
+                    'market_cap_usd' => $item->market_cap_usd,
+                    'market_cap_btc' => $item->market_cap_btc,
+                    'price_usd' => $item->price_usd,
+                    'price_btc' => $item->price_btc,
+                    'price_cny' => round($item->price_usd * 6.7, 2),
+                    'volume_usd' => $item->volume_usd,
+                    'volume_btc' => $item->volume_btc,
+                    'change_rate_usd' => $item->change_rate_usd,
+                    'change_rate_btc' => $item->change_rate_btc,
+                    'publish_at' => $item->publish_at,
+                ];
+            }
+        }
+
         return $this->successJson($ret);
     }
 
