@@ -44,7 +44,7 @@ class PostTimeline extends Command
 
         $originData = DB::select('select * from `origin_data` where id > 0 and status = 0 order by id limit 10');
         foreach($originData AS $item) {
-            $crawler = new Crawler($item['html']);
+            $crawler = new Crawler($item->html);
             $crawler = $crawler->filter('table > tbody')->children();
 
             foreach ($crawler as $domElement) {
@@ -65,7 +65,7 @@ class PostTimeline extends Command
                 $changeRateBtc = trim($e->filter('.percent-24h')->attr('data-btc'), '%');
 
                 $insertData = [
-                    'or_id' => $item['id'],
+                    'or_id' => $item->id,
                     'rank' => $rank,
                     'symbol' => $symbol,
                     'name' => $name,
@@ -78,13 +78,13 @@ class PostTimeline extends Command
                     'change_rate_usd' => $changeRateUsd,
                     'change_rate_btc' => $changeRateBtc,
                     'created_at' => date('Y-m-d H:i:s'),
-                    'publish_at' => $item['add_time']
+                    'publish_at' => $item->add_time
                 ];
 
                 DB::beginTransaction();
                 DB::table('market_timeline')->insert($insertData);
                 //更新 origin_data 为解析成功
-                DB::table('origin_data')->where('id', $item['id'])->update(['status' => 1]);
+                DB::table('origin_data')->where('id', $item->id)->update(['status' => 1]);
                 DB::commit();
             }
         }
