@@ -20,32 +20,26 @@ class CurrencyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function listByMarket(Request $request) {
+    public function listByExchange(Request $request)
+    {
+        $exchange = $request->get('exchange', 'bitfinex');
 
-        $marketId = $request->get('market_id', 0);
-        $ret = [];
-        if($marketId == 0) {
-            $totalMarketTimeline = DB::select('select * from `market_timeline` where or_id = 
-                 (select max(or_id) from `market_timeline`) order by rank limit 20');
-            foreach($totalMarketTimeline AS $item) {
-                $ret[] = [
-                    'rank' => $item->rank,
-                    'currency_logo' => 'https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png',
-                    'currency_symbol' => $item->symbol,
-                    'currency_name' => $item->name,
-                    'market_cap_usd' => $item->market_cap_usd,
-                    'market_cap_btc' => $item->market_cap_btc,
-                    'price_usd' => $item->price_usd,
-                    'price_btc' => $item->price_btc,
-                    'price_cny' => round($item->price_usd * 6.7, 2),
-                    'volume_usd' => $item->volume_usd,
-                    'volume_btc' => $item->volume_btc,
-                    'change_rate_usd' => $item->change_rate_usd,
-                    'change_rate_btc' => $item->change_rate_btc,
-                    'publish_at' => $item->publish_at,
-                ];
-            }
-        }
+        $ret = DB::select('SELECT
+	em.rank,
+	c.logo,
+	c.`name`,
+	em.pair,
+	em.price_usd_str,
+	em.volume_24h,
+	em.volume_rate,
+	em.add_time update_time 
+FROM
+	exchange_markets em
+	LEFT JOIN currencies c ON c.id = em.currency_id 
+WHERE
+	em.exchange_short_name = ? 
+ORDER BY
+	em.rank ASC', [$exchange]);
 
         return $this->successJson($ret);
     }
@@ -66,17 +60,17 @@ class CurrencyController extends Controller
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function topByVolume(Request $request) {
+    public function topByMarketCap(Request $request) {
 
         $limit = $request->get('limit', 20);
 
         $ret = [];
-        $totalMarketTimeline = DB::select('select * from `market_timeline` where or_id = 
+        $totalMarketTimeline = DB::select('select * from `market_timeline` mt join currencies c on mt.symbol = c.symbol where or_id = 
              (select max(or_id) from `market_timeline`) order by rank limit ?', [$limit]);
         foreach($totalMarketTimeline AS $item) {
             $ret[] = [
                 'rank' => $item->rank,
-                'currency_logo' => 'https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png',
+                'currency_logo' => $item->logo,
                 'currency_symbol' => $item->symbol,
                 'currency_name' => $item->name,
                 'market_cap_usd' => $item->market_cap_usd,
@@ -92,6 +86,6 @@ class CurrencyController extends Controller
             ];
         }
 
-        return $this->successJson();
+        return $this->successJson($ret);
     }
 }

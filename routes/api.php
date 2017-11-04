@@ -22,9 +22,9 @@ Route::get('/bithumb/public/ticker', 'BithumbPublicController@ticker');
 Route::get('/chbtc/market/ticker', 'CHBTCMarketController@ticker');
 Route::get('/index/index', 'IndexController@index');
 
-Route::get('/coin/listByMarket', 'CurrencyController@listByMarket');
+Route::get('/coin/listByExchange', 'CurrencyController@listByExchange');
 Route::get('/coin/search', 'CurrencyController@search');
-Route::get('/coin/topByVolume', 'CurrencyController@topByVolume');
+Route::get('/coin/topByMarketCap', 'CurrencyController@topByMarketCap');
 
 Route::get('/market/listByCoin', 'MarketController@listByCoin');
 Route::get('/market/search', 'MarketController@search');

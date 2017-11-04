@@ -3,6 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
+use Symfony\Component\DomCrawler\Crawler;
+use GuzzleHttp\Client;
 
 class fetchCurrency extends Command
 {
@@ -49,7 +52,31 @@ class fetchCurrency extends Command
                 $urls[] = $e->filter('.currency-symbol > a')->attr('href');
             }
         }
+        unset($originData);
 
-        var_dump($urls);
+        $client = new Client();
+        foreach($urls AS $url) {
+            $insertCurrencyData = [];
+
+            $url = 'https://coinmarketcap.com'.$url;
+            $insertCurrencyData['source_url'] = $url;
+            $res = $client->request('GET', $url);
+
+            $html = $res->getBody()->getContents();
+            $crawler = new Crawler($html);
+            $insertCurrencyData['logo'] = $crawler->filter('.currency-logo-32x32')->attr('src');
+            $insertCurrencyData['name'] = $crawler->filter('.currency-logo-32x32')->attr('alt');
+            $symbol = $crawler->filter('h1 > small')->text();
+            $insertCurrencyData['symbol'] = trim($symbol, '()');
+            $insertCurrencyData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');
+            $tags = $crawler->filter('.list-unstyled > li')->last()->html();
+            $insertCurrencyData['mineable'] = strpos($tags, 'Mineable') > 0 ? 1 : 0;
+            $insertCurrencyData['type'] = strpos($tags, 'Coin') > 0 ? 'coin' : 'token';
+
+            DB::table('currencies')->insert($insertCurrencyData);
+
+            var_dump($insertCurrencyData);
+        }
+
     }
 }
