@@ -67,6 +67,31 @@ class CurrencyController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function topByVolume(Request $request) {
+
+        $limit = $request->get('limit', 20);
+
+        $ret = [];
+        $totalMarketTimeline = DB::select('select * from `market_timeline` where or_id = 
+             (select max(or_id) from `market_timeline`) order by rank limit ?', [$limit]);
+        foreach($totalMarketTimeline AS $item) {
+            $ret[] = [
+                'rank' => $item->rank,
+                'currency_logo' => 'https://files.coinmarketcap.com/static/img/coins/32x32/bitcoin.png',
+                'currency_symbol' => $item->symbol,
+                'currency_name' => $item->name,
+                'market_cap_usd' => $item->market_cap_usd,
+                'market_cap_btc' => $item->market_cap_btc,
+                'price_usd' => $item->price_usd,
+                'price_btc' => $item->price_btc,
+                'price_cny' => round($item->price_usd * 6.7, 2),
+                'volume_usd' => $item->volume_usd,
+                'volume_btc' => $item->volume_btc,
+                'change_rate_usd' => $item->change_rate_usd,
+                'change_rate_btc' => $item->change_rate_btc,
+                'publish_at' => $item->publish_at,
+            ];
+        }
+
         return $this->successJson();
     }
 }
