@@ -43,8 +43,8 @@ class CurrencyController extends Controller
         $limit = $request->get('limit', 20);
 
         $ret = [];
-        $totalMarketTimeline = DB::select('select * from `market_timeline` mt join currencies c on mt.symbol = c.symbol where or_id = 
-             (select max(or_id) from `market_timeline`) order by rank limit ?', [$limit]);
+        $totalMarketTimeline = DB::select('select * from `marketcap_timeline` mt join currencies c on mt.symbol = c.symbol where or_id = 
+             (select max(or_id) from `marketcap_timeline`) order by rank limit ?', [$limit]);
         foreach($totalMarketTimeline AS $item) {
             $ret[] = [
                 'rank' => $item->rank,

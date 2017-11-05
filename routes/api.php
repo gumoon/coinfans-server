@@ -27,8 +27,8 @@ Route::get('/currency/search', 'CurrencyController@search');
 Route::get('/currency/topByMarketCap', 'CurrencyController@topByMarketCap');
 
 //市场
-Route::get('/market/listByExchange', 'CurrencyController@listByExchange');
+Route::get('/market/listByExchange', 'MarketController@listByExchange');
 Route::get('/market/listByCurrency', 'MarketController@listByCurrency');
 
 //交易所
-Route::get('/exchange/search', 'MarketController@search');
+Route::get('/exchange/search', 'ExchangeController@search');

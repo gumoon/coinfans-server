@@ -26,10 +26,22 @@ class Kernel extends ConsoleKernel
     {
          $schedule->command('fetch:currencyMarketcapOriginData')
                   ->everyThirtyMinutes()
-                  ->appendOutputTo('/tmp/coinfans_schedule.log');
+                  ->appendOutputTo('/tmp/currency_marketcap_origin_data.log');
+
+         //定时分析市值原始数据
          $schedule->command('post:marketcapTimeline')
              ->everyMinute()
-             ->appendOutputTo('/tmp/coinfans_schedule1.log');
+             ->appendOutputTo('/tmp/marketcap_timeline.log');
+
+         //定时抓取货币下的市场信息
+         $schedule->command('fetch:currencyMarketTimeline')
+             ->everyThirtyMinutes()
+             ->appendOutputTo('/tmp/currency_market_timeline.log');
+
+         //定时抓取交易所下的市场信息
+         $schedule->command('fetch:exchangeMarketsTimeline')
+             ->everyThirtyMinutes()
+             ->appendOutputTo('/tmp/exchange_markets_timeline.log');
     }
 
     /**

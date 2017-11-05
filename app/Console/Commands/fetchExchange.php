@@ -59,27 +59,27 @@ class fetchExchange extends Command
 
 
         foreach($urls AS $url) {
-            $insertData = [];
+            $insertExchangeData = [];
 
             $searches = ['/exchanges/', '/'];
-            $insertData['short_name'] = str_replace($searches, '', $url);
+            $insertExchangeData['short_name'] = str_replace($searches, '', $url);
             $url = 'https://coinmarketcap.com'.$url;
             $res = $client->request('GET', $url);
 
             $html = $res->getBody()->getContents();
             $crawler = new Crawler($html);
-            $insertData['name'] = $crawler->filter('h1')->text();
+            $insertExchangeData['name'] = $crawler->filter('h1')->text();
 
-            $insertData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');
-            $insertData['add_time'] = date('Y-m-d H:i:s');
+            $insertExchangeData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');
+            $insertExchangeData['add_time'] = date('Y-m-d H:i:s');
 
-            $exchange = DB::table('exchanges')->where('short_name', $insertData['short_name'])->first();
+            $exchange = DB::table('exchanges')->where('short_name', $insertExchangeData['short_name'])->first();
             if(empty($exchange)) {
-                DB::table('exchanges')->insert($insertData);
+                DB::table('exchanges')->insert($insertExchangeData);
             }
 
 //
-            var_dump($insertData);
+            var_dump($insertExchangeData);
         }
     }
 }

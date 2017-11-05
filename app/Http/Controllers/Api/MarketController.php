@@ -33,7 +33,7 @@ class MarketController extends Controller
 	cm.volume_rate volume_rate,
 	cm.add_time update_time 
 FROM
-	currency_markets cm
+	currency_markets_timeline cm
 	JOIN currencies c ON cm.currency_id = c.id 
 	JOIN exchanges e ON cm.exchange_id = e.id
 WHERE
@@ -67,7 +67,7 @@ ORDER BY
 	em.volume_rate,
 	em.add_time update_time 
 FROM
-	exchange_markets em
+	exchange_markets_timeline em
 	LEFT JOIN currencies c ON c.id = em.currency_id 
 WHERE
 	em.exchange_short_name = ? 

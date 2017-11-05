@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use GuzzleHttp\Client;
 
 class FetchCurrencyMarketCap extends Command
 {
@@ -40,12 +41,13 @@ class FetchCurrencyMarketCap extends Command
     {
         //抓取网页，然后入库
         $url = "https://coinmarketcap.com/";
-        $html = file_get_contents($url);
+        $client = new Client();
+        $res = $client->request('GET', $url);
+
+        $html = $res->getBody()->getContents();
 
         $id = DB::insert('insert into `origin_data` (url, html, add_time) values (?, ?, ?)', [$url, $html, date('Y-m-d H:i:s', time())]);
 
         $this->comment($id);
-
-        return $id;
     }
 }
