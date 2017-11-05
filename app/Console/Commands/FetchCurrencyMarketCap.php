@@ -5,14 +5,14 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
-class FetchCoinMarketCap extends Command
+class FetchCurrencyMarketCap extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fetch:coinmarketcap';
+    protected $signature = 'fetch:currencyMarketcapOriginData';
 
     /**
      * The console command description.

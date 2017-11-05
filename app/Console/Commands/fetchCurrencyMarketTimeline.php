@@ -7,14 +7,14 @@ use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
 use GuzzleHttp\Client;
 
-class fetchCoinMarket extends Command
+class fetchCurrencyMarketTimeline extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fetch:coinMarket';
+    protected $signature = 'fetch:currencyMarketTimeline';
 
     /**
      * The console command description.
@@ -72,7 +72,7 @@ class fetchCoinMarket extends Command
                 $insertData['volume_rate'] = trim($e->filter('td')->eq(5)->text(),'%');
                 $insertData['add_time'] = date('Y-m-d H:i:s');
 
-                DB::table('coin_markets')->insert($insertData);
+                DB::table('currency_markets_timeline')->insert($insertData);
 
                 var_dump($insertData);
 

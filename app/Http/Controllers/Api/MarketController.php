@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\DB;
 class MarketController extends Controller
 {
     /**
-     * 支持某个币交易的所有市场列表
+     * 某种货币的市场列表
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function listByCoin(Request $request) {
+    public function listByCurrency(Request $request) {
 
         $symbol = strtoupper($request->get('symbol', 'BTC'));
 
@@ -33,7 +33,7 @@ class MarketController extends Controller
 	cm.volume_rate volume_rate,
 	cm.add_time update_time 
 FROM
-	coin_markets cm
+	currency_markets cm
 	JOIN currencies c ON cm.currency_id = c.id 
 	JOIN exchanges e ON cm.exchange_id = e.id
 WHERE
@@ -48,12 +48,32 @@ ORDER BY
     }
 
     /**
-     * 搜索市场
+     * 某个交易所提供的市场列表
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function search(Request $request) {
-        return $this->successJson();
+    public function listByExchange(Request $request)
+    {
+        $exchange = $request->get('exchange', 'bitfinex');
+
+        $ret = DB::select('SELECT
+	em.rank,
+	c.logo,
+	c.`name`,
+	em.pair,
+	em.price_usd_str,
+	em.volume_24h,
+	em.volume_rate,
+	em.add_time update_time 
+FROM
+	exchange_markets em
+	LEFT JOIN currencies c ON c.id = em.currency_id 
+WHERE
+	em.exchange_short_name = ? 
+ORDER BY
+	em.rank ASC', [$exchange]);
+
+        return $this->successJson($ret);
     }
 }

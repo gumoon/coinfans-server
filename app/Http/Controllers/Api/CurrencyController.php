@@ -15,43 +15,21 @@ use Illuminate\Support\Facades\DB;
 class CurrencyController extends Controller
 {
     /**
-     * 整个市场或某个市场的所有在线币信息
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function listByExchange(Request $request)
-    {
-        $exchange = $request->get('exchange', 'bitfinex');
-
-        $ret = DB::select('SELECT
-	em.rank,
-	c.logo,
-	c.`name`,
-	em.pair,
-	em.price_usd_str,
-	em.volume_24h,
-	em.volume_rate,
-	em.add_time update_time 
-FROM
-	exchange_markets em
-	LEFT JOIN currencies c ON c.id = em.currency_id 
-WHERE
-	em.exchange_short_name = ? 
-ORDER BY
-	em.rank ASC', [$exchange]);
-
-        return $this->successJson($ret);
-    }
-
-    /**
      * 搜索币
      *
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
     public function search(Request $request) {
-        return $this->successJson();
+        $keyword = $request->get('keyword');
+
+        $ret = [];
+        if(!empty($keyword)) {
+            $keyword = '%'.$keyword.'%';
+            $ret = DB::select('SELECT * FROM currencies WHERE symbol like ?', [$keyword]);
+        }
+
+        return $this->successJson($ret);
     }
 
     /**

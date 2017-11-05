@@ -6,21 +6,21 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
 
-class PostTimeline extends Command
+class PosMarketCapTimeline extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'post:marketTimeline';
+    protected $signature = 'post:marketcapTimeline';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'post a market timeline';
+    protected $description = 'post a marketcap timeline';
 
     /**
      * Create a new command instance.
@@ -82,7 +82,7 @@ class PostTimeline extends Command
                 ];
 
                 DB::beginTransaction();
-                DB::table('market_timeline')->insert($insertData);
+                DB::table('marketcap_timeline')->insert($insertData);
                 //更新 origin_data 为解析成功
                 DB::table('origin_data')->where('id', $item->id)->update(['status' => 1]);
                 DB::commit();

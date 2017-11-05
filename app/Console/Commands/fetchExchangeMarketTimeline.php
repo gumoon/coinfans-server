@@ -7,14 +7,14 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
 
-class fetchExchangeMarket extends Command
+class fetchExchangeMarketTimeline extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'fetch:exchangeActiveMarkets';
+    protected $signature = 'fetch:exchangeMarketsTimeline';
 
     /**
      * The console command description.
@@ -98,7 +98,7 @@ class fetchExchangeMarket extends Command
                 $insertData['volume_rate'] = trim($e->filter('td')->eq(5)->text(),'%');
                 $insertData['add_time'] = date('Y-m-d H:i:s');
 
-                DB::table('exchange_markets')->insert($insertData);
+                DB::table('exchange_markets_timeline')->insert($insertData);
 
                 var_dump($insertData);
             }

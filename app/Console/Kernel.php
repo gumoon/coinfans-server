@@ -24,10 +24,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('fetch:coinmarketcap')
+         $schedule->command('fetch:currencyMarketcapOriginData')
                   ->everyThirtyMinutes()
                   ->appendOutputTo('/tmp/coinfans_schedule.log');
-         $schedule->command('post:marketTimeline')
+         $schedule->command('post:marketcapTimeline')
              ->everyMinute()
              ->appendOutputTo('/tmp/coinfans_schedule1.log');
     }
