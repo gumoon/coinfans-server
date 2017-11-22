@@ -68,9 +68,9 @@ class fetchExchange extends Command
 
             $html = $res->getBody()->getContents();
             $crawler = new Crawler($html);
-            $insertExchangeData['name'] = $crawler->filter('h1')->text();
+            $insertExchangeData['name'] = trim($crawler->filter('h1')->text());
 
-            $insertExchangeData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');
+            $insertExchangeData['website'] = trim($crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href'));
             $insertExchangeData['add_time'] = date('Y-m-d H:i:s');
 
             $exchange = DB::table('exchanges')->where('short_name', $insertExchangeData['short_name'])->first();

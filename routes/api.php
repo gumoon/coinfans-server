@@ -32,3 +32,4 @@ Route::get('/market/listByCurrency', 'MarketController@listByCurrency');
 
 //交易所
 Route::get('/exchange/search', 'ExchangeController@search');
+Route::get('/exchange/coins', 'ExchangeController@coins');

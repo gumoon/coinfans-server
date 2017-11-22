@@ -54,6 +54,8 @@ class fetchCurrencyMarketTimeline extends Command
 
             $crawler = $crawler->filter('#markets-table > tbody')->children();
             $i = 0;
+
+            $currentTime = date('Y-m-d H:i:s');
             foreach ($crawler as $domElement) {
                 $insertData = [];
                 $insertData['currency_id'] = $currency->id;
@@ -74,10 +76,10 @@ class fetchCurrencyMarketTimeline extends Command
 
                     $html = $res->getBody()->getContents();
                     $crawler = new Crawler($html);
-                    $insertExchangeData['name'] = $crawler->filter('h1')->text();
+                    $insertExchangeData['name'] = trim($crawler->filter('h1')->text());
 
                     $insertExchangeData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');
-                    $insertExchangeData['add_time'] = date('Y-m-d H:i:s');
+                    $insertExchangeData['add_time'] = $currentTime;
 
                     var_dump($insertExchangeData);
 
@@ -87,18 +89,18 @@ class fetchCurrencyMarketTimeline extends Command
                 }
 
                 $insertData['exchange_id'] = $exchangeId;
-                $insertData['pair'] = $e->filter('td')->eq(2)->filter('a')->text();
+                $insertData['pair'] = trim($e->filter('td')->eq(2)->filter('a')->text());
                 $insertData['volume_24h'] = trim($e->filter('td')->eq(3)->filter('span')->text());
                 echo $e->filter('td')->eq(3)->filter('span')->text() . "\n";
                 $insertData['price_usd_str'] = trim($e->filter('td')->eq(4)->filter('span')->text());
                 $insertData['volume_rate'] = trim($e->filter('td')->eq(5)->text(), '%');
-                $insertData['add_time'] = date('Y-m-d H:i:s');
+                $insertData['add_time'] = $currentTime;
 
                 DB::table('currency_markets_timeline')->insert($insertData);
 
                 var_dump($insertData);
 
-                if ($i >= 20) {
+                if ($i >= 50) {
                     echo $item . "满20了";
                     break;
                 }

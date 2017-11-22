@@ -31,4 +31,33 @@ class ExchangeController extends Controller
 
         return $this->successJson($ret);
     }
+
+    /**
+     * 交易所支持交易的所有货币
+     *
+     * @param Request $request
+     */
+    public function coins(Request $request)
+    {
+        $exchange = $request->get('exchange');
+
+        $ret = [];
+        if(!empty($exchange)) {
+            //先找到最大的 auto_id
+            $maxAutoId = DB::table('exchange_markets_timeline')->max('auto_id');
+
+            //然后找到所有的交易对，分离出来排重就是交易所支持的所有货币了。
+            $pairs = DB::table('exchange_markets_timeline')->select('pair')
+                ->where('auto_id', $maxAutoId)
+                ->where('exchange_short_name', strtolower($exchange))
+                ->get();
+
+            foreach ($pairs AS $item) {
+                $tmp = explode('/', $item->pair);
+                $ret[] = $tmp[0];
+            }
+        }
+
+        return $this->successJson(array_unique($ret));
+    }
 }

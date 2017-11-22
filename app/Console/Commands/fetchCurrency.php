@@ -64,8 +64,8 @@ class fetchCurrency extends Command
 
             $html = $res->getBody()->getContents();
             $crawler = new Crawler($html);
-            $insertCurrencyData['logo'] = $crawler->filter('.currency-logo-32x32')->attr('src');
-            $insertCurrencyData['name'] = $crawler->filter('.currency-logo-32x32')->attr('alt');
+            $insertCurrencyData['logo'] = trim($crawler->filter('.currency-logo-32x32')->attr('src'));
+            $insertCurrencyData['name'] = trim($crawler->filter('.currency-logo-32x32')->attr('alt'));
             $symbol = $crawler->filter('h1 > small')->text();
             $insertCurrencyData['symbol'] = trim($symbol, '()');
             $insertCurrencyData['website'] = $crawler->filter('.list-unstyled > li')->first()->filter('a')->attr('href');

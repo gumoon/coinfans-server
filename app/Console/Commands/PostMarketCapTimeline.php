@@ -6,7 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\DomCrawler\Crawler;
 
-class PosMarketCapTimeline extends Command
+class PostMarketCapTimeline extends Command
 {
     /**
      * The name and signature of the console command.
@@ -42,7 +42,7 @@ class PosMarketCapTimeline extends Command
         //从 origin_data 表中取出1000条记录，按正序排列，确保先处理id小的。
         //循环分析这1000条记录，写入 market_timeline 表，然后，更改 origin_data 表字段为已分析。
 
-        $originData = DB::select('select * from `origin_data` where id > 0 and status = 1 order by id limit 10');
+        $originData = DB::select('select * from `origin_data` where id > 0 and status = 0 order by id limit 10');
         foreach($originData AS $item) {
             $crawler = new Crawler($item->html);
             $crawler = $crawler->filter('table > tbody')->children();
@@ -85,7 +85,7 @@ class PosMarketCapTimeline extends Command
                 $id = DB::table('marketcap_timeline')->insertGetId($insertData);
 
                 echo $id."\n";
-                
+
                 //更新 origin_data 为解析成功
                 DB::table('origin_data')->where('id', $item->id)->update(['status' => 1]);
                 DB::commit();

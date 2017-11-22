@@ -40,18 +40,16 @@ class fetchExchangeMarketTimeline extends Command
      */
     public function handle()
     {
+        set_time_limit(0);
         //只抓取我们想要的那些交易所，解析出来，插入库
-        $exchanges = ['bitfinex','bittrex','poloniex',"bithumb","liqui","kraken","zaif"];
-
+        $exchanges = DB::table('exchanges')->select('short_name')->get();
         $client = new Client();
         foreach($exchanges AS $item) {
-            $url = "https://coinmarketcap.com/exchanges/".$item.'/';
-
+            $url = "https://coinmarketcap.com/exchanges/".$item->short_name.'/';
+echo $url."\n";
             $res = $client->request('GET', $url);
             $html = $res->getBody()->getContents();
             $crawler = new Crawler($html);
-
-//            $crawler = $crawler->filter('tbody');
             $childs = $crawler->filter('table')->children();
             $i = 0;
             foreach ($childs as $domElement) {
@@ -60,12 +58,16 @@ class fetchExchangeMarketTimeline extends Command
                     continue;
                 }
                 $insertData = [];
-                $insertData['exchange_short_name'] = $item;
+                $insertData['exchange_short_name'] = $item->short_name;
                 $e = new Crawler($domElement);
                 $insertData['rank'] = $e->filter('td')->eq(0)->text();
                 $currencyUrl = $e->filter('td')->eq(1)->filter('a')->attr('href');
+echo $currencyUrl."\n";
+if($currencyUrl == "/currencies/wowcoin/" || $currencyUrl == '/currencies/safecoin/') {
+    continue;
+}
                 $currency = DB::table('currencies')->where('source_url', 'like', '%'.$currencyUrl)->first();
-
+var_dump($currency);
                 //找不到的情况下，插入这个货币
                 if(empty($currency)) {
                     $insertCurrencyData = [];
@@ -85,7 +87,16 @@ class fetchExchangeMarketTimeline extends Command
                     $insertCurrencyData['mineable'] = strpos($tags, 'Mineable') > 0 ? 1 : 0;
                     $insertCurrencyData['type'] = strpos($tags, 'Coin') > 0 ? 'coin' : 'token';
 
-                    $currencyId = DB::table('currencies')->insertGetId($insertCurrencyData);
+                    if($currencyUrl == "/currencies/artbyte/") {
+                        $currencyId = 224;
+                    } elseif($currencyUrl == '/currencies/espers/') {
+                        $currencyId = 997;
+                    } elseif($currencyUrl = '/currencies/printerium/') {
+                        $currencyId = 1053;
+                    } else {
+                        $currencyId = DB::table('currencies')->insertGetId($insertCurrencyData);
+                    }
+
                 } else {
                     $currencyId = $currency->id;
                 }
@@ -93,10 +104,10 @@ class fetchExchangeMarketTimeline extends Command
                 $insertData['currency_id'] = $currencyId;
                 $insertData['pair'] = $e->filter('td')->eq(2)->filter('a')->text();
                 $insertData['volume_24h'] = trim($e->filter('td')->eq(3)->filter('span')->text());
-                echo $e->filter('td')->eq(3)->filter('span')->text()."\n";
                 $insertData['price_usd_str'] = trim($e->filter('td')->eq(4)->filter('span')->text());
                 $insertData['volume_rate'] = trim($e->filter('td')->eq(5)->text(),'%');
                 $insertData['add_time'] = date('Y-m-d H:i:s');
+                $insertData['auto_id'] = $_SERVER['REQUEST_TIME'];
 
                 DB::table('exchange_markets_timeline')->insert($insertData);
 

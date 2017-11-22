@@ -25,22 +25,22 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
          $schedule->command('fetch:currencyMarketcapOriginData')
-                  ->everyThirtyMinutes()
+                  ->everyFiveMinutes()
                   ->appendOutputTo('/tmp/currency_marketcap_origin_data.log');
 
          //定时分析市值原始数据
          $schedule->command('post:marketcapTimeline')
-             ->everyMinute()
+             ->everyFiveMinutes()
              ->appendOutputTo('/tmp/marketcap_timeline.log');
 
          //定时抓取货币下的市场信息
          $schedule->command('fetch:currencyMarketTimeline')
-             ->everyThirtyMinutes()
+             ->everyFiveMinutes()
              ->appendOutputTo('/tmp/currency_market_timeline.log');
 
          //定时抓取交易所下的市场信息
          $schedule->command('fetch:exchangeMarketsTimeline')
-             ->everyThirtyMinutes()
+             ->everyFifteenMinutes()
              ->appendOutputTo('/tmp/exchange_markets_timeline.log');
     }
 
