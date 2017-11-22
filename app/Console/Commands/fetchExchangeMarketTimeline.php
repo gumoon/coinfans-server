@@ -42,10 +42,13 @@ class fetchExchangeMarketTimeline extends Command
     {
         set_time_limit(0);
         //只抓取我们想要的那些交易所，解析出来，插入库
-        $exchanges = DB::table('exchanges')->select('short_name')->get();
+//        $exchanges = DB::table('exchanges')->select('short_name')->get();
+        $exchanges = ['bitfinex', 'bittrex', 'poloniex', 'bithumb', 'liqui'];
+
         $client = new Client();
         foreach($exchanges AS $item) {
-            $url = "https://coinmarketcap.com/exchanges/".$item->short_name.'/';
+//            $url = "https://coinmarketcap.com/exchanges/".$item->short_name.'/';
+            $url = "https://coinmarketcap.com/exchanges/".$item.'/';
 echo $url."\n";
             $res = $client->request('GET', $url);
             $html = $res->getBody()->getContents();
@@ -58,7 +61,8 @@ echo $url."\n";
                     continue;
                 }
                 $insertData = [];
-                $insertData['exchange_short_name'] = $item->short_name;
+//                $insertData['exchange_short_name'] = $item->short_name;
+                $insertData['exchange_short_name'] = $item;
                 $e = new Crawler($domElement);
                 $insertData['rank'] = $e->filter('td')->eq(0)->text();
                 $currencyUrl = $e->filter('td')->eq(1)->filter('a')->attr('href');

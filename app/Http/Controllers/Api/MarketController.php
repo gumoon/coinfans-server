@@ -78,7 +78,7 @@ class MarketController extends Controller
         $currencies = $request->get('currencies');
 
         $exchange = strtolower($exchange);
-        $maxAutoId = DB::table('exchange_markets_timeline')->max('auto_id');
+        $maxAutoId = DB::table('exchange_markets_timeline')->where('exchange_short_name', $exchange)->max('auto_id');
 
         $query = DB::table('exchange_markets_timeline')
                     ->leftJoin('currencies', 'currencies.id', '=', 'exchange_markets_timeline.currency_id')
