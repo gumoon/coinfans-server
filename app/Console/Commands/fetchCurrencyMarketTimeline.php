@@ -41,7 +41,7 @@ class fetchCurrencyMarketTimeline extends Command
     public function handle()
     {
         //只抓取我们想要的那些币，解析出来，插入库
-        $currencies = ['BTC', 'LTC', 'ETH', "BCH", "ETC", "EOS", "SNT", "XRP"];
+        $currencies = ['BTC', 'LTC', 'ETH', "BCH", "ETC", "EOS", "SNT", "XRP", "QTUM"];
 
         $client = new Client();
         foreach ($currencies AS $item) {
