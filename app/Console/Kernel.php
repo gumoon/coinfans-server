@@ -42,6 +42,10 @@ class Kernel extends ConsoleKernel
          $schedule->command('fetch:exchangeMarketsTimeline')
              ->everyFifteenMinutes()
              ->appendOutputTo('/tmp/exchange_markets_timeline.log');
+
+         //每天抓一次汇率
+        $schedule->command('fetch:rates')
+            ->dailyAt('10:00');
     }
 
     /**
