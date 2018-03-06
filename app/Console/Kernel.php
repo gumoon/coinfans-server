@@ -24,28 +24,29 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('fetch:currencyMarketcapOriginData')
-                  ->everyFiveMinutes()
-                  ->appendOutputTo('/tmp/currency_marketcap_origin_data.log');
+//         $schedule->command('fetch:currencyMarketcapOriginData')
+//                  ->everyFiveMinutes()
+//                  ->appendOutputTo('/tmp/currency_marketcap_origin_data.log');
+//
+//         //定时分析市值原始数据
+//         $schedule->command('post:marketcapTimeline')
+//             ->everyFiveMinutes()
+//             ->appendOutputTo('/tmp/marketcap_timeline.log');
 
-         //定时分析市值原始数据
-         $schedule->command('post:marketcapTimeline')
-             ->everyFiveMinutes()
-             ->appendOutputTo('/tmp/marketcap_timeline.log');
-
-         //定时抓取货币下的市场信息
-         $schedule->command('fetch:currencyMarketTimeline')
-             ->everyFiveMinutes()
-             ->appendOutputTo('/tmp/currency_market_timeline.log');
-
-         //定时抓取交易所下的市场信息
-         $schedule->command('fetch:exchangeMarketsTimeline')
-             ->everyFifteenMinutes()
-             ->appendOutputTo('/tmp/exchange_markets_timeline.log');
+//         //定时抓取货币下的市场信息
+//         $schedule->command('fetch:currencyMarketTimeline')
+//             ->everyFiveMinutes()
+//             ->appendOutputTo('/tmp/currency_market_timeline.log');
+//
+//         //定时抓取交易所下的市场信息
+//         $schedule->command('fetch:exchangeMarketsTimeline')
+//             ->everyFifteenMinutes()
+//             ->appendOutputTo('/tmp/exchange_markets_timeline.log');
 
          //每天抓一次汇率
         $schedule->command('fetch:rates')
-            ->dailyAt('10:00');
+            ->dailyAt('10:00')
+            ->appendOutputTo('/tmp/rates.log');
     }
 
     /**
